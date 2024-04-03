@@ -11,7 +11,7 @@ class SplashViewModel {
   void splashTimer(BuildContext context) {
     Timer(Duration(seconds: 2), () {
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeView()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeView()));
     });
   }
 
