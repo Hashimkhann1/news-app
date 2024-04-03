@@ -41,7 +41,7 @@ class _SplashViewState extends State<SplashView> {
           SizedBox(height: height * 0.04,),
           SpinKitChasingDots(
             color: Colors.blue,
-            size: 40,
+            size: 41,
           )
         ],
       )),
