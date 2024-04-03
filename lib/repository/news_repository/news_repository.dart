@@ -6,10 +6,12 @@ import 'package:newsapp/models/news_channel_headlines_model.dart';
 
 class NewsRepository {
 
-  Future<NewsChannelsHeadlinesModel> fetachNewsChannelHeadlines() async {
 
-    String url = ' https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=d7d27942a8de49afb3bbdf2c2b178ab9';
 
+  Future<NewsChannelsHeadlinesModel> fetachNewsChannelHeadlines(String channelName) async {
+
+
+    String url = 'https://newsapi.org/v2/top-headlines?sources=${channelName}&apiKey=d7d27942a8de49afb3bbdf2c2b178ab9';
     final responce = await http.get(Uri.parse(url));
 
     if(responce.statusCode == 200){
