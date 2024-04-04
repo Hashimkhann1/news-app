@@ -7,7 +7,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:newsapp/models/catergories_news_model.dart';
 import 'package:newsapp/models/news_channel_headlines_model.dart';
+import 'package:newsapp/view/categories_view/categories_view.dart';
+import 'package:newsapp/view/news_detial_view/news_detail_view.dart';
 import 'package:newsapp/view_model/news_view_model/news_view_model.dart';
 
 class HomeView extends StatefulWidget {
@@ -41,7 +44,9 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: (){},
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoriesView()));
+          },
           icon: Image.asset('images/category_icon.png',width: 24,height: 24,),
         ),
         title: Text('News',style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w700),),
@@ -89,7 +94,7 @@ class _HomeViewState extends State<HomeView> {
           )
         ],
       ),
-      body: ListView(
+      body: Column(
         children: [
           Container(
             height: height * 0.55,
@@ -111,95 +116,210 @@ class _HomeViewState extends State<HomeView> {
                     itemBuilder: (context , index) {
 
                     DateTime dateTime = DateTime.parse(snapshot.data!.articles![index].publishedAt.toString());
-                      return SizedBox(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            //////// background image
-                            Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: height * 0.02
-                                ),
-                              height: height * 0.7,
-                                width: width * 0.9,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: CachedNetworkImage(
-                                    imageUrl: snapshot.data!.articles![index].urlToImage.toString(),
-                                    fit: BoxFit.cover,
-                                    placeholder: (context , url) => Container(child: HomeView.spinkit2,),
-                                    errorWidget: (context , url , error) => Icon(Icons.error_outline, color: Colors.red,),
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => NewsDetailView(
+                              newsImage: snapshot.data!.articles![index].urlToImage.toString(),
+                              newsTitle: snapshot.data!.articles![index].title.toString(),
+                              newsDate: dateformat.format(dateTime),
+                              auther: snapshot.data!.articles![index].author.toString(),
+                              descripition: snapshot.data!.articles![index].description.toString(),
+                              content: snapshot.data!.articles![index].content.toString(),
+                              source: snapshot.data!.articles![index].source!.name.toString())));
+                        },
+                        child: SizedBox(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              //////// background image
+                              Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: height * 0.02
                                   ),
-                                )
-                            ),
+                                height: height * 0.7,
+                                  width: width * 0.9,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: CachedNetworkImage(
+                                      imageUrl: snapshot.data!.articles![index].urlToImage.toString(),
+                                      fit: BoxFit.cover,
+                                      placeholder: (context , url) => Container(child: HomeView.spinkit2,),
+                                      errorWidget: (context , url , error) => Icon(Icons.error_outline, color: Colors.red,),
+                                    ),
+                                  )
+                              ),
 
-                            ///// card
-                            Positioned(
-                              bottom: 20,
-                              child: Card(
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)
-                                ),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.all(15),
-                                  height: height * 0.18,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      /////// news title ///////
-                                      Container(
-                                        width: width * 0.7,
-                                        child: Text(
-                                          snapshot.data!.articles![index].title.toString(),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 17, fontWeight: FontWeight.w700
+                              ///// card
+                              Positioned(
+                                bottom: 20,
+                                child: Card(
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)
+                                  ),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(15),
+                                    height: height * 0.18,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        /////// news title ///////
+                                        Container(
+                                          width: width * 0.7,
+                                          child: Text(
+                                            snapshot.data!.articles![index].title.toString(),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 17, fontWeight: FontWeight.w700
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Spacer(),
+                                        Spacer(),
 
-                                      ////////  news source and date time
-                                      Container(
-                                        width: width * 0.7,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              snapshot.data!.articles![index].source!.name.toString(),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 13, fontWeight: FontWeight.w600,
-                                                color: Colors.blue
+                                        ////////  news source and date time
+                                        Container(
+                                          width: width * 0.7,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                snapshot.data!.articles![index].source!.name.toString(),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 13, fontWeight: FontWeight.w600,
+                                                  color: Colors.blue
+                                                ),
                                               ),
-                                            ),
-                                            Text(dateformat.format(dateTime) ,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 12, fontWeight: FontWeight.w500
+                                              Text(dateformat.format(dateTime) ,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 12, fontWeight: FontWeight.w500
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
                       );
                 });
               },
             ),
-          )
+          ),
+
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: FutureBuilder<CatergoriesNewsModel>(
+                future: newViewModel.fetchCategoriesNewsApi('General'),
+                builder: (context , snapshot) {
+                  if(snapshot.connectionState == ConnectionState.waiting){
+                    return const Center(
+                      child: Text('....')
+                    );
+                  }
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.articles!.length,
+                      itemBuilder: (context , index) {
+                        DateTime dateTime = DateTime.parse(snapshot.data!.articles![index].publishedAt.toString());
+                        return snapshot.data!.articles![index].urlToImage == null ? SizedBox() : InkWell(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => NewsDetailView(
+                                newsImage: snapshot.data!.articles![index].urlToImage.toString(),
+                                newsTitle: snapshot.data!.articles![index].title.toString(),
+                                newsDate: dateformat.format(dateTime),
+                                auther: snapshot.data!.articles![index].author.toString(),
+                                descripition: snapshot.data!.articles![index].description.toString(),
+                                content: snapshot.data!.articles![index].content.toString(),
+                                source: snapshot.data!.articles![index].source!.name.toString())));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom:  15.0),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: CachedNetworkImage(
+                                    height: height * .18,
+                                    width: width * 0.3,
+
+                                    imageUrl: snapshot.data!.articles![index].urlToImage.toString(),
+                                    fit: BoxFit.cover,
+                                    placeholder: (context , url) => Container(child: Center(
+                                      child: SpinKitCircle(
+                                        size: 50,
+                                        color: Colors.blue,
+                                      ),
+                                    ),),
+                                    errorWidget: (context , url , error) => Icon(Icons.error_outline, color: Colors.red,),
+                                  ),
+                                ),
+                                Expanded(
+                                    child: Container(
+                                      height: height * .18,
+                                      padding: EdgeInsets.only(left: 15),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            snapshot.data!.articles![index].title.toString(),
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 15,
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                snapshot.data!.articles![index].source!.name.toString(),
+                                                maxLines: 3,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              Text(
+                                                dateformat.format(dateTime),
+                                                maxLines: 3,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 11,
+                                                  color: Colors.black54,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
